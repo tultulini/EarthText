@@ -1,0 +1,128 @@
+[
+	{
+		"text": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+		"fontDetails": {
+			"fileName": "Athabasca Bold Font",
+			"fontName": "Athabasca Bold"
+		},
+		"position": {
+			"latitude": 49.95,
+			"longtitude": -100,
+			"scale": 1,
+			"rotate": 0
+		},
+		"color": "Black"
+	},
+	{
+		"text": "abcdefghijklmnopqrstuvwxyz",
+		"fontDetails": {
+			"fileName": "Athabasca Bold Font",
+			"fontName": "Athabasca Bold"
+		},
+		"position": {
+			"latitude": 49.9,
+			"longtitude": -100,
+			"scale": 1,
+			"rotate": 0
+		},
+		"color": "Blue"
+	},
+	{
+		"text": "123456789",
+		"fontDetails": {
+			"fileName": "Athabasca Bold Font",
+			"fontName": "Athabasca Bold"
+		},
+		"position": {
+			"latitude": 49.85,
+			"longtitude": -100,
+			"scale": 1,
+			"rotate": 0
+		},
+		"color": "Cyan"
+	},
+	{
+		"text": "~@!#$%^&*()-_=+[{]}\\;:'\",<.> /",
+		"fontDetails": {
+			"fileName": "Athabasca Bold Font",
+			"fontName": "Athabasca Bold"
+		},
+		"position": {
+			"latitude": 49.8,
+			"longtitude": -100,
+			"scale": 1,
+			"rotate": 0
+		},
+		"color": "Green"
+	},
+	{
+		"text": "Rotate 45 derees",
+		"fontDetails": {
+			"fileName": "Athabasca Bold Font",
+			"fontName": "Athabasca Bold"
+		},
+		"position": {
+			"latitude": 49.65,
+			"longtitude": -100,
+			"scale": 1,
+			"rotate": 45
+		},
+		"color": "Magenta"
+	},
+	{
+		"text": "Double Size",
+		"fontDetails": {
+			"fileName": "Athabasca Bold Font",
+			"fontName": "Athabasca Bold"
+		},
+		"position": {
+			"latitude": 49.5,
+			"longtitude": -100,
+			"scale": 2,
+			"rotate": 0
+		},
+		"color": "Orange"
+	},
+	{
+		"text": "Red Colour",
+		"fontDetails": {
+			"fileName": "Athabasca Bold Font",
+			"fontName": "Athabasca Bold"
+		},
+		"position": {
+			"latitude": 49.45,
+			"longtitude": -100,
+			"scale": 1,
+			"rotate": 0
+		},
+		"color": "Red"
+	},
+	{
+		"text": "White Colour",
+		"fontDetails": {
+			"fileName": "Athabasca Bold Font",
+			"fontName": "Athabasca Bold"
+		},
+		"position": {
+			"latitude": 49.4,
+			"longtitude": -100,
+			"scale": 1,
+			"rotate": 0
+		},
+		"color": "White"
+	},
+	{
+		"text": "Yellow Colour",
+		"fontDetails": {
+			"fileName": "Athabasca Bold Font",
+			"fontName": "Athabasca Bold"
+		},
+		"position": {
+			"latitude": 49.35,
+			"longtitude": -100,
+			"scale": 1,
+			"rotate": 0
+		},
+		"color": "Yellow"
+	}
+]
