@@ -1,0 +1,15 @@
+            <Placemark>
+				<name>~~~POLYGON_NAME~~~</name>
+				<styleUrl>~~~POLYGON_STYLE~~~</styleUrl>
+				<Polygon>
+					<tessellate>1</tessellate>                        
+					<outerBoundaryIs>
+						<LinearRing>
+							<coordinates>
+							~~~OUTER_BOUNDARY_COORDS~~~
+							</coordinates>
+						</LinearRing>
+					</outerBoundaryIs>
+					~~~INNER_POLYGONS~~~
+				</Polygon>
+            </Placemark>

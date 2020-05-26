@@ -1,4 +1,4 @@
-export function GlyphBoundary() {
+export function Boundary() {
 
 }
 

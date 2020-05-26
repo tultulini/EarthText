@@ -23,3 +23,18 @@ export const isNumberString = (val) => !isNaN(+val)
 
 export const nullToZero = (val) => isNullOrUndefined(val) ? 0 : val
 
+export const extractFloat = (val, startPos) => {
+    let start = val.substring(startPos || 0).search(/[0-9.]/)
+    if (start < 0) {
+        return { index: -1 }
+    }
+    start += (startPos || 0)
+    let end = val.substring(start).search(/[^0-9.]/)
+    return {
+        value: end < 0
+            ? parseFloat(val.substring(start))
+            : parseFloat(val.substring(start, end)),
+        index: start
+    }
+
+}

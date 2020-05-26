@@ -1,6 +1,6 @@
 import { isNullOrUndefined } from "../utils/object"
 
-export function GlyphShape({ coords, cutouts }) {
+export function Shape({ coords, cutouts }) {
     Object.assign(this, { coords, cutouts })
     this.addCutout = (cutout) => {
         if (isNullOrUndefined(this.cutouts)) {

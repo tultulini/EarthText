@@ -1,0 +1,7 @@
+                    <innerBoundaryIs>
+                        <LinearRing>
+                            <coordinates>                                
+                                ~~~INNER_BOUNDARY_COORDS~~~
+                            </coordinates>
+                        </LinearRing>
+                    </innerBoundaryIs>

@@ -3,7 +3,7 @@ import { existsSync, readFileSync } from 'fs'
 import { arrayHasItems, isNullOrEmpty } from "../utils/arrays"
 import { readFileLineByLine } from "../utils/files"
 import { warnLog } from "../utils/log"
-import { GlyphShape } from "../domain/glyph-shape"
+import { Shape } from "../domain/shape"
 import { parseCoordinate } from "../domain/coordinate"
 import { Cutout } from "../domain/cutout"
 import {join} from 'path'
@@ -49,7 +49,7 @@ const loadShapes = (charDecimal, dir) => {
             break
         }
         const coordSets = content.split(' ')
-        const shape = new GlyphShape({ coords: coordSets.map(co => parseCoordinate(co)) })
+        const shape = new Shape({ coords: coordSets.map(co => parseCoordinate(co)) })
         shapes.push(shape)
         const cutouts = loadCutouts(dir, charDecimal, i)
         if (arrayHasItems(cutouts)) {

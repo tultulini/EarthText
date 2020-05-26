@@ -2,7 +2,7 @@ import { join } from 'path'
 import { getAsciiDecimal } from '../utils/strings'
 import { debugLog, warnLog } from '../utils/log'
 import { readFileLineByLine } from '../utils/files'
-import { setBoundaryByLine, GlyphBoundary } from '../domain/glyph-boundary'
+import { setBoundaryByLine, Boundary } from '../domain/boundary'
 import { isNullOrUndefined } from '../utils/object'
 import { stringify } from '../utils/json'
 import { existsSync } from 'fs'
@@ -22,7 +22,7 @@ export const loadFontBoundaries = async (dir, font) => {
 
         await readFileLineByLine(filePath, (line) => {
             if (isNullOrUndefined(font[currentChar])) {
-                font[currentChar] = new Glyph({ boundary: new GlyphBoundary() })
+                font[currentChar] = new Glyph({ boundary: new Boundary() })
             }
             setBoundaryByLine(font[currentChar].boundary, line)
         })
