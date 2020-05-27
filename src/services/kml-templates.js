@@ -1,5 +1,6 @@
 import { readFileSync } from 'fs'
-import { getResourcesPath } from '../system'
+import { getResourcesPath } from '../config'
+
 export const getTemplate = (templateFileName) => {
     const filePath = getResourcesPath(templateFileName)
     return readFileSync(filePath).toString()
@@ -15,7 +16,7 @@ export const KMLTemplateFiles = {
 export const KMLTemplatePlaceHolders = {
     HeaderFileName: "~~~KMLFileName~~~",
     PolygonsPlacemark: {
-        FileName: "~~~KMLFileName~~~",
+        PolygonName: "~~~POLYGON_NAME~~~",
         Style: "~~~POLYGON_STYLE~~~",
         OuterBoundariesCoords: "~~~OUTER_BOUNDARY_COORDS~~~",
         InnerPolygons: "~~~INNER_POLYGONS~~~"
