@@ -1,4 +1,4 @@
-#Earth Text
+# Earth Text
 
 ## Generates a KML files with texts and circles
 
