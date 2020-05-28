@@ -11,9 +11,9 @@ export function Coordinate({ lon, lat, alt }) {
 
 export function parseCoordinate(val) {
     const parts = val.split(",")
-    const lon = parts[0]
-    const lat = parts[1]
-    const alt = parts[2]
+    const lon = parseFloat(parts[0])
+    const lat = parseFloat(parts[1])
+    const alt = parseFloat(parts[2])
     return new Coordinate({ lon, lat, alt })
 }
 

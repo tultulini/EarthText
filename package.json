@@ -5,7 +5,9 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "rsync -aqz ./resources ./.compiled && babel src --watch --out-dir .compiled --source-maps"
+    "build-m": "rsync -aqz ./resources ./.compiled && babel src --watch --out-dir .compiled --source-maps",
+    "build-w": "xcopy resources\\* .compiled\\resources\\ /S /Y && babel src --watch --out-dir .compiled --source-maps"
+
   },
   "author": "",
   "license": "ISC",

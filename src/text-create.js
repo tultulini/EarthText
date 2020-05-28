@@ -35,13 +35,13 @@ const getFileName = () => {
 const renderPlan = {
     outputFileName: 'kaki',
     actions: [{
-        text: '\\c 123.45nm',
+        text: 'b',
         latString: 'N45 18.96',
         lonString: 'W65 53.41',
         scaleFactor: 1,
         rotate: 0,
         color: 'Magenta',
-        justify: 'center',
+        justify: 'left',
 
     }]
 }
@@ -102,7 +102,10 @@ function writeText(action, font, textCenter, writer) {
         let charPosition = adjustPositionByJustigy(action.justify, lineSize.width)
 
         for (let c of line.split('')) {
-            writeChar(c, font, textCenter, charPosition, action, writer)
+            debugLog(`charPosition before: ${charPosition}`)
+            charPosition = writeChar(c, font, textCenter, charPosition, action, writer)
+            debugLog(`charPosition after: ${charPosition}`)
+            
         }
     }
 }
@@ -133,26 +136,26 @@ function writeChar(c, font, textCenter, initialPosition, action, writer) {
     for (let shapeIdx in glyph.shapes) {
         const shape = glyph.shapes[shapeIdx]
         const transformedShape = shape.clone()
-        const transformedCoords = getTransformedCoordinates(shape.coords, originCoordinate, charCenterDestination, rotate)
+        const transformedCoords = getTransformedCoordinates(shape.coords, originCoordinate, charCenterDestination, rotate, action.scaleFactor)
         transformedShape.coords = transformedCoords
         if (arrayHasItems(transformedShape.cutouts)) {
             for (let cutout of transformedShape.cutouts) {
-                const transCutoutCoords = getTransformedCoordinates(cutout.coords, originCoordinate, charCenterDestination, rotate)
+                const transCutoutCoords = getTransformedCoordinates(cutout.coords, originCoordinate, charCenterDestination, rotate, action.scaleFactor)
                 cutout.coords = transCutoutCoords
             }
         }
         // const name = line.splice()
-        const name = `${c} - ${shapeIdx}`
-        const style = `#${color.toLowerCase()}_filled_outline`
+        const name = `${c} - ${shapeIdx} `
+        const style = `#${color.toLowerCase()} _filled_outline`
         writePolygon(writer, name, transformedShape, style)
     }
+    return charPosition
 
 }
 
-function getTransformedCoordinates(coords, originCoordinate, charCenterDestination, rotate) {
+function getTransformedCoordinates(coords, originCoordinate, charCenterDestination, rotate, scaleFactor) {
     const transformedCoords = []
-    for (let coordIdx of coords) {
-        const coord = shape.coords[coordIdx]
+    for (let coord of coords) {
         const originDistance = calculateDistance(originCoordinate.lat, originCoordinate.lon, coord.lat, coord.lon)
         const originBearing = calculateBearing(originCoordinate, coord)
         const transformedCoord = getDestination(charCenterDestination.lat, charCenterDestination.lon, originBearing + rotate, originDistance * scaleFactor)
@@ -246,7 +249,6 @@ function extractCircleDirective(text) {
     }
     pos += circleDirectiveSwitch.length
     const fl = extractFloat(text, pos)
-    debugLog(`fl: ${stringify(fl)}`)
     if (fl.index < 0) {
         throw new Error("Extracting Circle Directive Failed! Reason: Couldn't extract radius!")
     }
@@ -285,7 +287,7 @@ function radiusToKM(radius, units) {
 }
 
 function writeKmlHeader(writer, outputFileName) {
-//TODO: optimization - remove unused styles from header
+    //TODO: optimization - remove unused styles from header
     const headerTemplate = getTemplate(KMLTemplateFiles.Header)
 
     const header = headerTemplate.replace(KMLTemplatePlaceHolders.HeaderFileName, outputFileName)
@@ -319,7 +321,7 @@ function writePolygon(writer, polygonName, shape, style) {
     const placeMarkTemplate = getTemplate(KMLTemplateFiles.PolygonsPlacemark)
     //POLYGON NAME
     let placeMark = placeMarkTemplate.replace(KMLTemplatePlaceHolders.PolygonsPlacemark.PolygonName, polygonName)
-    
+
 
     //POLYGON STYLE
     placeMark = placeMark.replace(KMLTemplatePlaceHolders.PolygonsPlacemark.Style, style)
@@ -333,7 +335,7 @@ function writePolygon(writer, polygonName, shape, style) {
         }).join("\r\n") + '\r\n'
         placeMark = placeMark.replace(KMLTemplatePlaceHolders.PolygonsPlacemark.InnerPolygons, cutouts)
     }
-    else{
+    else {
         placeMark = placeMark.replace(KMLTemplatePlaceHolders.PolygonsPlacemark.InnerPolygons, '')
 
     }

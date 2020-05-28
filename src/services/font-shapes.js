@@ -1,12 +1,14 @@
 import { getAsciiDecimal, isNullOrWhiteSpace } from "../utils/strings"
 import { existsSync, readFileSync } from 'fs'
-import { arrayHasItems, isNullOrEmpty } from "../utils/arrays"
+import { arrayHasItems, isNullOrEmpty, lastItem } from "../utils/arrays"
 import { readFileLineByLine } from "../utils/files"
-import { warnLog } from "../utils/log"
+import { warnLog, debugLog } from "../utils/log"
 import { Shape } from "../domain/shape"
 import { parseCoordinate } from "../domain/coordinate"
 import { Cutout } from "../domain/cutout"
-import {join} from 'path'
+import { join } from 'path'
+import { stringify } from "../utils/json"
+
 const MAX_SHAPES_PER_GLYPH = 3
 const MAX_CUTOUTS_PER_SHAPE = 3
 
@@ -24,8 +26,11 @@ const loadCutouts = (dir, charDecimal, shapeIndex) => {
             warnLog(`${filePath} is empty`)
             break
         }
-        const coordSets = content.split(' ')
-        const cutout = new Cutout({ coords: coordSets.map(co => parseCoordinate(co)) })
+        const coordSets = content.trim().split(/ /)
+
+
+        const cutout = new Cutout({ coords: coordSets.map(parseCoordinate) })        
+        
         cutouts.push(cutout)
 
     }
@@ -48,8 +53,10 @@ const loadShapes = (charDecimal, dir) => {
             warnLog(`${filePath} is empty`)
             break
         }
-        const coordSets = content.split(' ')
+        const coordSets = content.trim().split(' ')
         const shape = new Shape({ coords: coordSets.map(co => parseCoordinate(co)) })
+                
+
         shapes.push(shape)
         const cutouts = loadCutouts(dir, charDecimal, i)
         if (arrayHasItems(cutouts)) {

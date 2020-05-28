@@ -1,7 +1,7 @@
 import { join } from 'path'
 import { Coordinate } from './domain/coordinate'
 import { isNullOrWhiteSpace } from './utils/strings'
-export const getFontDirectoryName = () => join('Fonts', 'Font')
+export const getFontDirectoryName = () => join('Fonts', 'Font 2')
 
 
 

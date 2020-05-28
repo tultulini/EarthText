@@ -1,5 +1,7 @@
+import { arrayHasItems } from "../utils/arrays"
+
 export function Cutout({ coords }) {
-    Object.assign(this, coords)
+    Object.assign(this, {coords})
     this.addCoord = (coord) => {
         if (isNullOrUndefined(this.coords)) {
             this.coords = []
@@ -8,9 +10,11 @@ export function Cutout({ coords }) {
 
     }
     this.clone = () => {
-        return new Cutout({
+        let newCoords = arrayHasItems(this.coords) ? this.coords.map(coord => coord.clone()) : null
+        const cloned = new Cutout({
             coords: arrayHasItems(this.coords) ? this.coords.map(coord => coord.clone()) : null
 
         })
+        return cloned
     }
 }
