@@ -29,11 +29,15 @@ export const extractFloat = (val, startPos) => {
         return { index: -1 }
     }
     start += (startPos || 0)
+    console.log(`al.substring(start):${val.substring(start)}`);
+    
     let end = val.substring(start).search(/[^0-9.]/)
+    console.log(`end :${end}`);
+    
     return {
         value: end < 0
             ? parseFloat(val.substring(start))
-            : parseFloat(val.substring(start, end)),
+            : parseFloat(val.substring(start, end + start)),
         index: start
     }
 

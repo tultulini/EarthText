@@ -6,7 +6,7 @@ import { loadFontShapes } from "./services/font-shapes";
 import { Font } from "./domain/font";
 import { debugLog, warnLog, errorLog } from "./utils/log";
 import { stringify } from "./utils/json";
-import { isNumberString } from "./utils/numbers";
+import { isNumberString, extractFloat } from "./utils/numbers";
 import {
     nauticalMilesToKm,
     statuteMilesToKm,
@@ -47,17 +47,25 @@ const renderPlan = {
 }
 
 async function render(renderPlan) {
-    const writer = createWriteStream(getResourcesPath(getFileName()))
-    writeKmlHeader(writer, renderPlan.outputFileName)
-    let font = await loadFontBoundaries(fontDirPath, new Font())
-    font = loadFontShapes(fontDirPath, font)
+    try {
+        const fileName = getFileName()
+        const filePath = getResourcesPath(fileName)
+        debugLog(`filePath:${filePath}`)
+        const writer = createWriteStream(filePath)
+        writeKmlHeader(writer, fileName)
+        const fontDirPath = getResourcesPath(getFontDirectoryName())
+        let font = await loadFontBoundaries(fontDirPath, new Font())
+        font = loadFontShapes(fontDirPath, font)
 
-    for (let action of renderPlan.actions) {
-        await renderAction(action, font, writer)
+        for (let action of renderPlan.actions) {
+            await renderAction(action, font, writer)
+        }
+
+        writeKmlFooter(writer)
+        debugLog(`Done - created ${getResourcesPath(fileName)}`)
+    } catch (err) {
+        errorLog(`error occured!!!`, err)
     }
-
-    writeKmlFooter(writer)
-    debugLog('done')
 
 }
 
@@ -67,8 +75,7 @@ async function render(renderPlan) {
 async function renderAction(action, font, writer) {
 
 
-    const fontName = getCurrentFont()
-    const fontDirPath = getResourcesPath(getFontDirectoryName())
+    // const fontName = getCurrentFont()
     // writeFileSync("c:\\temp\\font.json", stringify(font))
 
     const textCenterLat = convertToDecimalDegrees(cleanValue(action.latString))
@@ -95,13 +102,13 @@ function writeText(action, font, textCenter, writer) {
         let charPosition = adjustPositionByJustigy(action.justify, lineSize.width)
 
         for (let c of line.split('')) {
-            writeChar(c, font, textCenter, charPosition, action, line, writer)
+            writeChar(c, font, textCenter, charPosition, action, writer)
         }
     }
 }
 
 
-function writeChar(c, font, textCenter, initialPosition, action, line, writer) {
+function writeChar(c, font, textCenter, initialPosition, action, writer) {
     const { text,
         scaleFactor,
         rotate,
@@ -116,7 +123,7 @@ function writeChar(c, font, textCenter, initialPosition, action, line, writer) {
         ? 90
         : 270
 
-    const charCenterDestination = getDestination(textCenter.lat, textCenter.lon, bearing, Math.abs(charPosition))    
+    const charCenterDestination = getDestination(textCenter.lat, textCenter.lon, bearing, Math.abs(charPosition))
 
     charPosition += charSize.width / 2
 
@@ -135,7 +142,9 @@ function writeChar(c, font, textCenter, initialPosition, action, line, writer) {
             }
         }
         // const name = line.splice()
-        // writePolygon()
+        const name = `${c} - ${shapeIdx}`
+        const style = `#${color.toLowerCase()}_filled_outline`
+        writePolygon(writer, name, transformedShape, style)
     }
 
 }
@@ -237,6 +246,7 @@ function extractCircleDirective(text) {
     }
     pos += circleDirectiveSwitch.length
     const fl = extractFloat(text, pos)
+    debugLog(`fl: ${stringify(fl)}`)
     if (fl.index < 0) {
         throw new Error("Extracting Circle Directive Failed! Reason: Couldn't extract radius!")
     }
@@ -275,9 +285,10 @@ function radiusToKM(radius, units) {
 }
 
 function writeKmlHeader(writer, outputFileName) {
-    const headerTemplatePath = getTemplate(KMLTemplateFiles.Header)
-    const namePlaceHolder = '~~~KMLFileName~~~'
-    const header = readFileSync(headerTemplatePath).toString().replace(namePlaceHolder, outputFileName)
+//TODO: optimization - remove unused styles from header
+    const headerTemplate = getTemplate(KMLTemplateFiles.Header)
+
+    const header = headerTemplate.replace(KMLTemplatePlaceHolders.HeaderFileName, outputFileName)
     writer.write(header)
 }
 
@@ -286,17 +297,18 @@ function writeKmlFooter(writer) {
     writer.write(footerTemplate)
 }
 
-function writeCircle(writer, radiusKm, textCenter, textCenterLon, color) {
+function writeCircle(writer, radiusKm, textCenter, color) {
     const circlePointCount = getCirclePointsCount()
-    const shape = new Shape()
+    const coords = []
     for (let i = 0; i < circlePointCount - 1; i++) {
         const bearing = (360 / (circlePointCount - 1)) * i
         const destination = getDestination(textCenter.lat, textCenter.lon, bearing, radiusKm)
-        shape.addCoord(new Coordinate({ lon: destination.lon, lat: destination.lat }))
+        coords.push(new Coordinate({ lon: destination.lon, lat: destination.lat }))
     }
 
     //Last point closes circle
-    shape.addCoord(new Coordinate({ lon: shape[0].lon, lat: shape[0].lat }))
+    coords.push(new Coordinate({ lon: coords[0].lon, lat: coords[0].lat }))
+    const shape = new Shape({ coords })
     const polygonName = `Circle: Lat=${textCenter.lat.toFixed(3)} Lon=${textCenter.lon.toFixed(3)} R=${radiusKm}Km`
 
     const style = `#${color.toLowerCase()}_filled_outline`
@@ -307,9 +319,10 @@ function writePolygon(writer, polygonName, shape, style) {
     const placeMarkTemplate = getTemplate(KMLTemplateFiles.PolygonsPlacemark)
     //POLYGON NAME
     let placeMark = placeMarkTemplate.replace(KMLTemplatePlaceHolders.PolygonsPlacemark.PolygonName, polygonName)
+    
 
     //POLYGON STYLE
-    placeMark = placeMarkTemplate.replace(KMLTemplatePlaceHolders.PolygonsPlacemark.Style, style)
+    placeMark = placeMark.replace(KMLTemplatePlaceHolders.PolygonsPlacemark.Style, style)
 
     //INNER POLYGONS
     if (arrayHasItems(shape.cutouts)) {
@@ -318,11 +331,15 @@ function writePolygon(writer, polygonName, shape, style) {
             const coords = stringifyCoords(cutout.coords)
             return innerPolygonTemplate.replace(KMLTemplatePlaceHolders.InnerPolygonCoords, coords)
         }).join("\r\n") + '\r\n'
-        placeMark = placeMarkTemplate.replace(KMLTemplatePlaceHolders.PolygonsPlacemark.InnerPolygons, cutouts)
+        placeMark = placeMark.replace(KMLTemplatePlaceHolders.PolygonsPlacemark.InnerPolygons, cutouts)
+    }
+    else{
+        placeMark = placeMark.replace(KMLTemplatePlaceHolders.PolygonsPlacemark.InnerPolygons, '')
+
     }
 
     //OUTER SHAPE
-    placeMark = placeMarkTemplate.replace(KMLTemplatePlaceHolders.PolygonsPlacemark.OuterBoundariesCoords, stringifyCoords(shape.coords))
+    placeMark = placeMark.replace(KMLTemplatePlaceHolders.PolygonsPlacemark.OuterBoundariesCoords, stringifyCoords(shape.coords))
     writer.write(placeMark)
 }
 
