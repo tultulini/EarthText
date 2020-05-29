@@ -39,14 +39,14 @@ const renderPlan = {
     { text: "abcdefghijklmnopqrstuvwxyz", latString: "49.9", lonString: "-100", scaleFactor: 1, rotate: 0, color: "Blue" },
     { text: "123456789", latString: "49.85", lonString: "-100", scaleFactor: 1, rotate: 0, color: "Cyan" },
     { text: "~@!#$%^&*()-_=+[{]}\;:\"\",<.>/", latString: "49.8", lonString: "-100", scaleFactor: 1, rotate: 0, color: "Green" },
-    { text: "Rotate45derees", latString: "49.65", lonString: "-100", scaleFactor: 1, rotate: 45, color: "Magenta" },
-    { text: "DoubleSize", latString: "49.5", lonString: "-100", scaleFactor: 2, rotate: 0, color: "Orange" },
-    { text: "RedColour", latString: "49.45", lonString: "-100", scaleFactor: 1, rotate: 0, color: "Red" },
-    { text: "WhiteColour", latString: "49.4", lonString: "-100", scaleFactor: 1, rotate: 0, color: "White" },
-    { text: "YellowColour", latString: "49.35", lonString: "-100", scaleFactor: 1, rotate: 0, color: "Yellow" },
-    { text: "ThisTextisLeftJustified\nAndHas2Lines", latString: "49.3", lonString: "-100", scaleFactor: 1, rotate: 0, color: "Green", justify: "Left" },
-    { text: "ThisTextisRightJustified\nAndHas\n3Lines", latString: "49.2", lonString: "-100", scaleFactor: 1, rotate: 0, color: "Cyan", justify: "Right" },
-    { text: "ThisTextisCentered\nButOnlyHas2Lines", latString: "49", lonString: "-100", scaleFactor: 1, rotate: 0, color: "Yellow", justify: "Centre" }]
+    { text: "Rotate 45 derees", latString: "49.65", lonString: "-100", scaleFactor: 1, rotate: 45, color: "Magenta" },
+    { text: "Double Size", latString: "49.5", lonString: "-100", scaleFactor: 2, rotate: 0, color: "Orange" },
+    { text: "Red Colour", latString: "49.45", lonString: "-100", scaleFactor: 1, rotate: 0, color: "Red" },
+    { text: "White Colour", latString: "49.4", lonString: "-100", scaleFactor: 1, rotate: 0, color: "White" },
+    { text: "Yellow Colour", latString: "49.35", lonString: "-100", scaleFactor: 1, rotate: 0, color: "Yellow" },
+    { text: "This Text is Left Justified\nAnd Has 2Lines", latString: "49.3", lonString: "-100", scaleFactor: 1, rotate: 0, color: "Green", justify: "Left" },
+    { text: "This Textis Right Justified\nAnd Has\n3 Lines", latString: "49.2", lonString: "-100", scaleFactor: 1, rotate: 0, color: "Cyan", justify: "Right" },
+    { text: "This Text is Centered\nBut Only Has 2 Lines", latString: "49", lonString: "-100", scaleFactor: 1, rotate: 0, color: "Yellow", justify: "Centre" }]
 }
 
 async function render(renderPlan) {
@@ -55,7 +55,7 @@ async function render(renderPlan) {
         const filePath = getResourcesPath(fileName)
         debugLog(`filePath:${filePath}`)
         const writer = createWriteStream(filePath)
-        writeKmlHeader(writer, fileName)
+        writeKmlHeader(writer, renderPlan.outputFileName)
         const fontDirPath = getResourcesPath(getFontDirectoryName())
         let font = await loadFontBoundaries(fontDirPath, new Font())
         font = loadFontShapes(fontDirPath, font)
@@ -100,13 +100,28 @@ function writeText(action, font, textCenter, writer) {
 
 
     const textLines = action.text.split(/\r\n|\n|\r/)
+
+    const lineHeight = textLines.length > 1
+        ? textLines.reduce((max, lineo) => {
+            const lineSize = calculateTextSize(lineo, font, action.scaleFactor)
+            return Math.max(lineSize.height, max)
+        }, 0) * 1.5
+        : 0
+    let linePos = 0
+    let currentCenter = textCenter
     for (let line of textLines) {
         const lineSize = calculateTextSize(line, font, action.scaleFactor)
         let charPosition = adjustPositionByJustify(action.justify, lineSize.width)
 
-        for (let c of line.split('')) {            
-            charPosition = writeChar(c, font, textCenter, charPosition, action, writer)
+
+        for (let c of line.split('')) {
+            charPosition = writeChar(c, font, currentCenter, charPosition, action, writer)
         }
+        if (lineHeight > 0) {
+            currentCenter = getDestination(currentCenter.lat, currentCenter.lon, 180 + action.rotate, Math.abs(lineHeight))
+
+        }
+
     }
 }
 
@@ -146,7 +161,7 @@ function writeChar(c, font, textCenter, initialPosition, action, writer) {
         }
         // const name = line.splice()
         const name = `${c} - ${shapeIdx} `
-        const style = `#${color.toLowerCase()} _filled_outline`
+        const style = `#${color.toLowerCase()}_filled_outline`
         writePolygon(writer, name, transformedShape, style)
     }
     return charPosition
