@@ -134,7 +134,7 @@ function writeChar(c, font, textCenter, initialPosition, action, writer) {
         justify
     } = action
 
-    const charSize = calculateCharSize(c, font)
+    const charSize = calculateCharSize(c, font, scaleFactor)
     let charPosition = initialPosition + charSize.width / 2
 
     const bearing = rotate + (charPosition >= 0)
@@ -202,20 +202,20 @@ function calculateTextSize(text, font, scaleFactor) {
     let height = 0
 
     for (let c of text.split('')) {
-        const charSize = calculateCharSize(c, font)
+        const charSize = calculateCharSize(c, font, scaleFactor)
         width += charSize.width
         height = Math.max(height, charSize.height)
     }
-    return { height: height * (scaleFactor || 1), width: width * (scaleFactor || 1) }
+    return { height, width }
 }
 
-function calculateCharSize(c, font) {
+function calculateCharSize(c, font, scaleFactor) {
     const glyph = font[c]
     if (isNullOrUndefined(glyph)) {
         throw new Error(`Couldn't not calculate size of ${c} as there's no glyph definition for it in the font`)
     }
-    const width = calculateDistance(glyph.boundary.north, glyph.boundary.west, glyph.boundary.north, glyph.boundary.east)
-    const height = calculateDistance(glyph.boundary.north, glyph.boundary.west, glyph.boundary.south, glyph.boundary.west)
+    const width = calculateDistance(glyph.boundary.north, glyph.boundary.west, glyph.boundary.north, glyph.boundary.east) * (scaleFactor || 1)
+    const height = calculateDistance(glyph.boundary.north, glyph.boundary.west, glyph.boundary.south, glyph.boundary.west) * (scaleFactor || 1)
     return { height, width }
 }
 
