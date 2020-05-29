@@ -73,7 +73,7 @@ export const loadFontShapes = (dir, font) => {
         const asciiDecimal = getAsciiDecimal(char)
         const shapes = loadShapes(asciiDecimal, dir)
         if (isNullOrEmpty(shapes)) {
-            warnLog(`${char} has no shapes`)
+            warnLog(`'${char}' has no shapes`)
             continue
         }
         font[char].shapes = shapes

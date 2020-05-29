@@ -24,6 +24,7 @@ import { Shape } from "./domain/shape";
 import { getTemplate, KMLTemplateFiles, KMLTemplatePlaceHolders } from "./services/kml-templates";
 import { arrayHasItems } from "./utils/arrays";
 import { isNullOrUndefined } from "./utils/object";
+import { isNullOrWhiteSpace } from "./utils/strings";
 
 
 const getFileName = () => {
@@ -34,16 +35,18 @@ const getFileName = () => {
 
 const renderPlan = {
     outputFileName: 'kaki',
-    actions: [{
-        text: 'ya',
-        latString: 'N45 18.96',
-        lonString: 'W65 53.41',
-        scaleFactor: 1,
-        rotate: 0,
-        color: 'Magenta',
-        justify: 'left',
-
-    }]
+    actions: [{ text: "ABCDEFGHIJKLMNOPQRSTUVWXYZ", latString: "49.95", lonString: "-100", scaleFactor: 1, rotate: 0, color: "Black" },
+    { text: "abcdefghijklmnopqrstuvwxyz", latString: "49.9", lonString: "-100", scaleFactor: 1, rotate: 0, color: "Blue" },
+    { text: "123456789", latString: "49.85", lonString: "-100", scaleFactor: 1, rotate: 0, color: "Cyan" },
+    { text: "~@!#$%^&*()-_=+[{]}\;:\"\",<.>/", latString: "49.8", lonString: "-100", scaleFactor: 1, rotate: 0, color: "Green" },
+    { text: "Rotate45derees", latString: "49.65", lonString: "-100", scaleFactor: 1, rotate: 45, color: "Magenta" },
+    { text: "DoubleSize", latString: "49.5", lonString: "-100", scaleFactor: 2, rotate: 0, color: "Orange" },
+    { text: "RedColour", latString: "49.45", lonString: "-100", scaleFactor: 1, rotate: 0, color: "Red" },
+    { text: "WhiteColour", latString: "49.4", lonString: "-100", scaleFactor: 1, rotate: 0, color: "White" },
+    { text: "YellowColour", latString: "49.35", lonString: "-100", scaleFactor: 1, rotate: 0, color: "Yellow" },
+    { text: "ThisTextisLeftJustified\nAndHas2Lines", latString: "49.3", lonString: "-100", scaleFactor: 1, rotate: 0, color: "Green", justify: "Left" },
+    { text: "ThisTextisRightJustified\nAndHas\n3Lines", latString: "49.2", lonString: "-100", scaleFactor: 1, rotate: 0, color: "Cyan", justify: "Right" },
+    { text: "ThisTextisCentered\nButOnlyHas2Lines", latString: "49", lonString: "-100", scaleFactor: 1, rotate: 0, color: "Yellow", justify: "Centre" }]
 }
 
 async function render(renderPlan) {
@@ -99,13 +102,10 @@ function writeText(action, font, textCenter, writer) {
     const textLines = action.text.split(/\r\n|\n|\r/)
     for (let line of textLines) {
         const lineSize = calculateTextSize(line, font, action.scaleFactor)
-        let charPosition = adjustPositionByJustigy(action.justify, lineSize.width)
+        let charPosition = adjustPositionByJustify(action.justify, lineSize.width)
 
-        for (let c of line.split('')) {
-            debugLog(`charPosition before: ${charPosition}`)
+        for (let c of line.split('')) {            
             charPosition = writeChar(c, font, textCenter, charPosition, action, writer)
-            debugLog(`charPosition after: ${charPosition}`)
-
         }
     }
 }
@@ -165,9 +165,9 @@ function getTransformedCoordinates(coords, originCoordinate, charCenterDestinati
 }
 
 
-function adjustPositionByJustigy(justify, textWidth) {
+function adjustPositionByJustify(justify, textWidth) {
     let position = 0
-    switch (justify.toLowerCase()) {
+    switch (isNullOrWhiteSpace(justify) ? justify : justify.toLowerCase()) {
         case "left":
             position = 0
             break
@@ -267,7 +267,7 @@ function extractCircleDirective(text) {
 
 
 function radiusToKM(radius, units) {
-    switch (units.toLowerCase()) {
+    switch (units.trim().toLowerCase()) {
         case "km":
             return radius
         case "nm":

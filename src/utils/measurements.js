@@ -65,7 +65,6 @@ export const getDestination = (lat, lon, bearing, distanceKm) => {
         sind(bearing) * sinAngularDist * cosd(lat),
         cosAngularDist - sind(lat) * sind(latRes))
 
-    debugLog(`lat: ${latRes}, lon:${lonRes}`)
     return new Coordinate({ lat: latRes, lon: lonRes })
 }
 
@@ -92,7 +91,7 @@ export const calculateBearing = (originCoord, targetCoord) => {
     if (bearing < 0) {
         bearing += 360
     }
-    debugLog(`bearing: ${bearing}`)
+    
     return bearing
 }
 
