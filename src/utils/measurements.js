@@ -1,4 +1,6 @@
 import { Coordinate } from "../domain/coordinate"
+import { square, sind, cosd, asind, atan2d, converToRadian, converToDegrees, cosr, sinr } from "./maths"
+import { debugLog } from "./log"
 
 const KM_IN_NAUTICAL_MILE = 1.852
 const KM_IN_STATUTE_MILE = 1.609344
@@ -52,54 +54,45 @@ export const convertToDecimalDegrees = (value) => {
     }
 }
 
-export const getDestination = (latDeg, lonDeg, bearingDeg, distanceKm) => {
+export const getDestination = (lat, lon, bearing, distanceKm) => {
     const angularDistance = distanceKm / EARTH_RADIUS_KM
-    const latRadInput = converToRadian(latDeg)
-    const lonRadInput = converToRadian(lonDeg)
-    const bearingRad = converToRadian(bearingDeg)
-    const latRadRes =
-        Math.asin(Math.sin(latRadInput) * Math.cos(angularDistance) + Math.cos(latRadInput) * Math.sin(angularDistance) * Math.cos(bearingRad))
+    const sinAngularDist = sinr(angularDistance)
+    const cosAngularDist = cosr(angularDistance)
 
-    const lonRadRes = lonRadInput + Math.atan2(Math.cos(angularDistance) - Math.sin(latRadInput) * Math.sin(latRadRes),
-        Math.sin(bearingRad) * Math.sin(angularDistance) * Math.cos(latRadInput))
+    const latRes =
+        asind(sind(lat) * cosAngularDist + cosd(lat) * sinAngularDist * cosd(bearing))
+    const lonRes = lon + atan2d(
+        sind(bearing) * sinAngularDist * cosd(lat),
+        cosAngularDist - sind(lat) * sind(latRes))
 
-
-    return new Coordinate({ lat: converToDegrees(latRadRes), lon: converToDegrees(lonRadRes) })
+    debugLog(`lat: ${latRes}, lon:${lonRes}`)
+    return new Coordinate({ lat: latRes, lon: lonRes })
 }
 
-export const calculateDistance = (latFromDeg, lonFromDeg, latToDeg, lonToDeg) => {
-    const latFromRad = converToRadian(latFromDeg)
-    const lonFromRad = converToRadian(lonFromDeg)
-    const latToRad = converToRadian(latToDeg)
-    const lonToRad = converToRadian(lonToDeg)
-    const deltaLat = latToRad - latFromRad
-    const deltaLon = lonToRad - lonFromRad
-    const a = Math.pow(Math.sin(deltaLat / 2), 2) +
-        Math.cos(latFromRad) * Math.cos(latToRad) * Math.pow(Math.sin(deltaLon / 2), 2)
-    const c = 2 * Math.atan2(Math.sqrt(1 - a), Math.sqrt(a))
+
+export const calculateDistance = (latSource, lonSource, latDestination, lonDestination) => {
+    const deltaLat = latDestination - latSource
+    const deltaLon = lonDestination - lonSource
+
+    const a = sind(deltaLat / 2) * sind(deltaLat / 2) +
+        cosd(latSource) * cosd(latDestination) * sind(deltaLon / 2) * sind(deltaLon / 2)
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
     return EARTH_RADIUS_KM * c
 }
 
+
+
 export const calculateBearing = (originCoord, targetCoord) => {
-
-    const originCoordRad = originCoord.converToRadian()
-    const targetCoordRad = targetCoord.converToRadian()
-
-    let bearing = converToDegrees(Math.atan2(Math.cos(originCoordRad.lat) * Math.sin(targetCoordRad.lat) - Math.sin(originCoordRad.lat) * Math.cos(targetCoordRad.lat) * Math.cos(targetCoordRad.lon - originCoordRad.lon),
-        Math.sin(targetCoordRad.lon - originCoordRad.lon) * Math.cos(targetCoordRad.lat)))
+    let bearing = atan2d(
+        sind(targetCoord.lon - originCoord.lon) * cosd(targetCoord.lat),
+        cosd(originCoord.lat) * sind(targetCoord.lat) - sind(originCoord.lat) * cosd(targetCoord.lat) * cosd(targetCoord.lon - originCoord.lon))
 
     bearing = bearing % 360
 
     if (bearing < 0) {
         bearing += 360
     }
-
+    debugLog(`bearing: ${bearing}`)
     return bearing
 }
 
-export const converToRadian = (deg) => {
-    return deg * Math.PI / 180
-}
-export const converToDegrees = (rad) => {
-    return rad * 180 / Math.PI
-}

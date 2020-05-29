@@ -35,7 +35,7 @@ const getFileName = () => {
 const renderPlan = {
     outputFileName: 'kaki',
     actions: [{
-        text: 'b',
+        text: 'ya',
         latString: 'N45 18.96',
         lonString: 'W65 53.41',
         scaleFactor: 1,
@@ -105,7 +105,7 @@ function writeText(action, font, textCenter, writer) {
             debugLog(`charPosition before: ${charPosition}`)
             charPosition = writeChar(c, font, textCenter, charPosition, action, writer)
             debugLog(`charPosition after: ${charPosition}`)
-            
+
         }
     }
 }
@@ -220,6 +220,7 @@ const cleanValue = (value) => {
 }
 
 const cleanPolygonName = (value) => {
+
     let result = ''
     for (let char of value.split('')) {
         switch (char) {
@@ -320,7 +321,7 @@ function writeCircle(writer, radiusKm, textCenter, color) {
 function writePolygon(writer, polygonName, shape, style) {
     const placeMarkTemplate = getTemplate(KMLTemplateFiles.PolygonsPlacemark)
     //POLYGON NAME
-    let placeMark = placeMarkTemplate.replace(KMLTemplatePlaceHolders.PolygonsPlacemark.PolygonName, polygonName)
+    let placeMark = placeMarkTemplate.replace(KMLTemplatePlaceHolders.PolygonsPlacemark.PolygonName, cleanPolygonName(polygonName))
 
 
     //POLYGON STYLE
