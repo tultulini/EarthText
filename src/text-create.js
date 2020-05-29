@@ -35,18 +35,20 @@ const getFileName = () => {
 
 const renderPlan = {
     outputFileName: 'kaki',
-    actions: [{ text: "ABCDEFGHIJKLMNOPQRSTUVWXYZ", latString: "49.95", lonString: "-100", scaleFactor: 1, rotate: 0, color: "Black" },
-    { text: "abcdefghijklmnopqrstuvwxyz", latString: "49.9", lonString: "-100", scaleFactor: 1, rotate: 0, color: "Blue" },
-    { text: "123456789", latString: "49.85", lonString: "-100", scaleFactor: 1, rotate: 0, color: "Cyan" },
-    { text: "~@!#$%^&*()-_=+[{]}\;:\"\",<.>/", latString: "49.8", lonString: "-100", scaleFactor: 1, rotate: 0, color: "Green" },
-    { text: "Rotate 45 derees", latString: "49.65", lonString: "-100", scaleFactor: 1, rotate: 45, color: "Magenta" },
-    { text: "Double Size", latString: "49.5", lonString: "-100", scaleFactor: 2, rotate: 0, color: "Orange" },
-    { text: "Red Colour", latString: "49.45", lonString: "-100", scaleFactor: 1, rotate: 0, color: "Red" },
-    { text: "White Colour", latString: "49.4", lonString: "-100", scaleFactor: 1, rotate: 0, color: "White" },
-    { text: "Yellow Colour", latString: "49.35", lonString: "-100", scaleFactor: 1, rotate: 0, color: "Yellow" },
-    { text: "This Text is Left Justified\nAnd Has 2Lines", latString: "49.3", lonString: "-100", scaleFactor: 1, rotate: 0, color: "Green", justify: "Left" },
-    { text: "This Textis Right Justified\nAnd Has\n3 Lines", latString: "49.2", lonString: "-100", scaleFactor: 1, rotate: 0, color: "Cyan", justify: "Right" },
-    { text: "This Text is Centered\nBut Only Has 2 Lines", latString: "49", lonString: "-100", scaleFactor: 1, rotate: 0, color: "Yellow", justify: "Centre" }]
+    actions: [
+        { text: "ABCDEFGHIJKLMNOPQRSTUVWXYZ", latString: "49.95", lonString: "-100", scaleFactor: 1, rotate: 0, color: "Black" },
+        { text: "abcdefghijklmnopqrstuvwxyz", latString: "49.9", lonString: "-100", scaleFactor: 1, rotate: 0, color: "Blue" },
+        { text: "123456789", latString: "49.85", lonString: "-100", scaleFactor: 1, rotate: 0, color: "Cyan" },
+        { text: "~@!#$%^&*()-_=+[{]}\;:\"\",<.>/", latString: "49.8", lonString: "-100", scaleFactor: 1, rotate: 0, color: "Green" },
+        { text: "Rotate 45 derees", latString: "49.65", lonString: "-100", scaleFactor: 1, rotate: 45, color: "Magenta" },
+        { text: "Double Size", latString: "49.5", lonString: "-100", scaleFactor: 2, rotate: 0, color: "Orange" },
+        { text: "Red Colour", latString: "49.45", lonString: "-100", scaleFactor: 1, rotate: 0, color: "Red" },
+        { text: "White Colour", latString: "49.4", lonString: "-100", scaleFactor: 1, rotate: 0, color: "White" },
+        { text: "Yellow Colour", latString: "49.35", lonString: "-100", scaleFactor: 1, rotate: 0, color: "Yellow" },
+        { text: "This Text is Left Justified\nAnd Has 2Lines", latString: "49.3", lonString: "-100", scaleFactor: 1, rotate: 0, color: "Green", justify: "Left" },
+        { text: "This Textis Right Justified\nAnd Has\n3 Lines", latString: "49.2", lonString: "-100", scaleFactor: 1, rotate: 0, color: "Cyan", justify: "Right" },
+        { text: "This Text is Centered\nBut Only Has 2 Lines", latString: "49", lonString: "-100", scaleFactor: 1, rotate: 0, color: "Yellow", justify: "Centre" }
+    ]
 }
 
 async function render(renderPlan) {
@@ -127,23 +129,24 @@ function writeText(action, font, textCenter, writer) {
 
 
 function writeChar(c, font, textCenter, initialPosition, action, writer) {
-    const { text,
+    const {
         scaleFactor,
         rotate,
-        color,
-        justify
+        color
     } = action
 
     const charSize = calculateCharSize(c, font, scaleFactor)
     let charPosition = initialPosition + charSize.width / 2
 
-    const bearing = rotate + (charPosition >= 0)
+    const bearing = rotate + ((charPosition >= 0)
         ? 90
-        : 270
+        : 270)
+
 
     const charCenterDestination = getDestination(textCenter.lat, textCenter.lon, bearing, Math.abs(charPosition))
-
     charPosition += charSize.width / 2
+
+
 
     const glyph = font[c]
 
