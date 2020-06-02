@@ -1,4 +1,9 @@
-export function Boundary() {
+export function Boundary({ north, south, east, west }) {
+    Object.assign(this, { north, south, east, west })
+    this.getNorthWest = () => new Coordinate({ lon: this.west, lat: this.north })
+    this.getNorthEast = () => new Coordinate({ lon: this.east, lat: this.north })
+    this.getSouthWest = () => new Coordinate({ lon: this.west, lat: this.south })
+    this.getSouthEast = () => new Coordinate({ lon: this.east, lat: this.south })
 
 }
 

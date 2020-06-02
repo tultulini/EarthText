@@ -1,5 +1,5 @@
 import { getCurrentFont } from "./fonts";
-import { createWriteStream, readFileSync } from 'fs'
+import { createWriteStream, writeFileSync } from 'fs'
 import { loadFontBoundaries } from "./services/font-boundaries";
 import { getFontDirectoryName, getCirclePointsCount, getResourcesPath, getOriginCoordinate } from "./config";
 import { loadFontShapes } from "./services/font-shapes";
@@ -25,49 +25,28 @@ import { getTemplate, KMLTemplateFiles, KMLTemplatePlaceHolders } from "./servic
 import { arrayHasItems } from "./utils/arrays";
 import { isNullOrUndefined } from "./utils/object";
 import { isNullOrWhiteSpace } from "./utils/strings";
+import { StringBuilder } from "./utils/string-builder";
+import { loadFonts } from "./services/fonts";
 
 
-const getFileName = () => {
-    const today = new Date()
-    const fileName = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}.kml`
-    return fileName
-}
 
-const renderPlan = {
-    outputFileName: 'kaki',
-    actions: [
-        { text: "ABCDEFGHIJKLMNOPQRSTUVWXYZ", latString: "49.95", lonString: "-100", scaleFactor: 1, rotate: 0, color: "Black" },
-        { text: "abcdefghijklmnopqrstuvwxyz", latString: "49.9", lonString: "-100", scaleFactor: 1, rotate: 0, color: "Blue" },
-        { text: "123456789", latString: "49.85", lonString: "-100", scaleFactor: 1, rotate: 0, color: "Cyan" },
-        { text: "~@!#$%^&*()-_=+[{]}\;:\"\",<.>/", latString: "49.8", lonString: "-100", scaleFactor: 1, rotate: 0, color: "Green" },
-        { text: "Rotate 45 derees", latString: "49.65", lonString: "-100", scaleFactor: 1, rotate: 45, color: "Magenta" },
-        { text: "Double Size", latString: "49.5", lonString: "-100", scaleFactor: 2, rotate: 0, color: "Orange" },
-        { text: "Red Colour", latString: "49.45", lonString: "-100", scaleFactor: 1, rotate: 0, color: "Red" },
-        { text: "White Colour", latString: "49.4", lonString: "-100", scaleFactor: 1, rotate: 0, color: "White" },
-        { text: "Yellow Colour", latString: "49.35", lonString: "-100", scaleFactor: 1, rotate: 0, color: "Yellow" },
-        { text: "This Text is Left Justified\nAnd Has 2Lines", latString: "49.3", lonString: "-100", scaleFactor: 1, rotate: 0, color: "Green", justify: "Left" },
-        { text: "This Textis Right Justified\nAnd Has\n3 Lines", latString: "49.2", lonString: "-100", scaleFactor: 1, rotate: 0, color: "Cyan", justify: "Right" },
-        { text: "This Text is Centered\nBut Only Has 2 Lines", latString: "49", lonString: "-100", scaleFactor: 1, rotate: 0, color: "Yellow", justify: "Centre" }
-    ]
-}
-
-async function render(renderPlan) {
+export const createLayer = async (renderPlan) => {
     try {
-        const fileName = getFileName()
-        const filePath = getResourcesPath(fileName)
-        debugLog(`filePath:${filePath}`)
-        const writer = createWriteStream(filePath)
-        writeKmlHeader(writer, renderPlan.outputFileName)
-        const fontDirPath = getResourcesPath(getFontDirectoryName())
-        let font = await loadFontBoundaries(fontDirPath, new Font())
-        font = loadFontShapes(fontDirPath, font)
+
+
+
+        const writer = new StringBuilder()
+        await writeKmlHeader(writer, renderPlan.planName || `Earth text product ${(new Date()).toISOString()}`)
+        const font = await loadFonts()
 
         for (let action of renderPlan.actions) {
             await renderAction(action, font, writer)
         }
 
-        writeKmlFooter(writer)
-        debugLog(`Done - created ${getResourcesPath(fileName)}`)
+        await writeKmlFooter(writer)
+        const kml = writer.toString()        
+        return kml
+
     } catch (err) {
         errorLog(`error occured!!!`, err)
     }
@@ -90,15 +69,15 @@ async function renderAction(action, font, writer) {
     const circleDirective = extractCircleDirective(action.text)
 
     if (circleDirective.exists) {
-        writeCircle(writer, circleDirective.radius, textCenter, action.color)
+        await writeCircle(writer, circleDirective.radius, textCenter, action.color)
     }
     else {
-        writeText(action, font, textCenter, writer)
+        await writeText(action, font, textCenter, writer)
     }
 
 }
 
-function writeText(action, font, textCenter, writer) {
+async function writeText(action, font, textCenter, writer) {
 
 
     const textLines = action.text.split(/\r\n|\n|\r/)
@@ -117,7 +96,7 @@ function writeText(action, font, textCenter, writer) {
 
 
         for (let c of line.split('')) {
-            charPosition = writeChar(c, font, currentCenter, charPosition, action, writer)
+            charPosition = await writeChar(c, font, currentCenter, charPosition, action, writer)
         }
         if (lineHeight > 0) {
             currentCenter = getDestination(currentCenter.lat, currentCenter.lon, 180 + action.rotate, Math.abs(lineHeight))
@@ -128,7 +107,7 @@ function writeText(action, font, textCenter, writer) {
 }
 
 
-function writeChar(c, font, textCenter, initialPosition, action, writer) {
+async function writeChar(c, font, textCenter, initialPosition, action, writer) {
     const {
         scaleFactor,
         rotate,
@@ -165,7 +144,7 @@ function writeChar(c, font, textCenter, initialPosition, action, writer) {
         // const name = line.splice()
         const name = `${c} - ${shapeIdx} `
         const style = `#${color.toLowerCase()}_filled_outline`
-        writePolygon(writer, name, transformedShape, style)
+        await writePolygon(writer, name, transformedShape, style)
     }
     return charPosition
 
@@ -305,20 +284,20 @@ function radiusToKM(radius, units) {
     }
 }
 
-function writeKmlHeader(writer, outputFileName) {
+async function writeKmlHeader(writer, planName) {
     //TODO: optimization - remove unused styles from header
-    const headerTemplate = getTemplate(KMLTemplateFiles.Header)
+    const headerTemplate = await getTemplate(KMLTemplateFiles.Header)
 
-    const header = headerTemplate.replace(KMLTemplatePlaceHolders.HeaderFileName, outputFileName)
+    const header = headerTemplate.replace(KMLTemplatePlaceHolders.HeaderFileName, planName)
     writer.write(header)
 }
 
-function writeKmlFooter(writer) {
-    const footerTemplate = getTemplate(KMLTemplateFiles.Footer)
+async function writeKmlFooter(writer) {
+    const footerTemplate = await getTemplate(KMLTemplateFiles.Footer)
     writer.write(footerTemplate)
 }
 
-function writeCircle(writer, radiusKm, textCenter, color) {
+async function writeCircle(writer, radiusKm, textCenter, color) {
     const circlePointCount = getCirclePointsCount()
     const coords = []
     for (let i = 0; i < circlePointCount - 1; i++) {
@@ -333,11 +312,11 @@ function writeCircle(writer, radiusKm, textCenter, color) {
     const polygonName = `Circle: Lat=${textCenter.lat.toFixed(3)} Lon=${textCenter.lon.toFixed(3)} R=${radiusKm}Km`
 
     const style = `#${color.toLowerCase()}_filled_outline`
-    writePolygon(writer, polygonName, shape, style)
+    await writePolygon(writer, polygonName, shape, style)
 }
 
-function writePolygon(writer, polygonName, shape, style) {
-    const placeMarkTemplate = getTemplate(KMLTemplateFiles.PolygonsPlacemark)
+async function writePolygon(writer, polygonName, shape, style) {
+    const placeMarkTemplate = await getTemplate(KMLTemplateFiles.PolygonsPlacemark)
     //POLYGON NAME
     let placeMark = placeMarkTemplate.replace(KMLTemplatePlaceHolders.PolygonsPlacemark.PolygonName, cleanPolygonName(polygonName))
 
@@ -347,7 +326,7 @@ function writePolygon(writer, polygonName, shape, style) {
 
     //INNER POLYGONS
     if (arrayHasItems(shape.cutouts)) {
-        const innerPolygonTemplate = getTemplate(KMLTemplateFiles.InnerPolygon)
+        const innerPolygonTemplate = await getTemplate(KMLTemplateFiles.InnerPolygon)
         const cutouts = shape.cutouts.map(cutout => {
             const coords = stringifyCoords(cutout.coords)
             return innerPolygonTemplate.replace(KMLTemplatePlaceHolders.InnerPolygonCoords, coords)
@@ -367,4 +346,5 @@ function writePolygon(writer, polygonName, shape, style) {
 function stringifyCoords(coords) {
     return coords.map(coord => coord.stringify()).join(' ')
 }
-render(renderPlan)
+
+

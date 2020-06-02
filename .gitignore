@@ -108,3 +108,5 @@ dist
 
 src/trash-can.js
 *.kml
+# Serverless directories
+.serverless

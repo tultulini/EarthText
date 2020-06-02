@@ -15,3 +15,8 @@ export const getResourcesPath = (fileName, direcotyPath) => {
         : join(direcotyPath, fileName)
     return join(process.cwd(), 'resources', relFilePath)
 }
+
+export const getS3BucketName = () => 'earth-text'
+export const FontFiles = {
+    Default: 'font.json'
+}

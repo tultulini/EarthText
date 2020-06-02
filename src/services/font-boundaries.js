@@ -4,7 +4,6 @@ import { debugLog, warnLog } from '../utils/log'
 import { readFileLineByLine } from '../utils/files'
 import { setBoundaryByLine, Boundary } from '../domain/boundary'
 import { isNullOrUndefined } from '../utils/object'
-import { stringify } from '../utils/json'
 import { existsSync } from 'fs'
 import { Glyph } from '../domain/glyph'
 
@@ -22,11 +21,12 @@ export const loadFontBoundaries = async (dir, font) => {
 
         await readFileLineByLine(filePath, (line) => {
             if (isNullOrUndefined(font[currentChar])) {
-                font[currentChar] = new Glyph({ boundary: new Boundary() })
+                //TODO: remove the Glyph creation from here
+                font[currentChar] = new Glyph({ boundary: new Boundary({ name }), name: currentChar })
             }
             setBoundaryByLine(font[currentChar].boundary, line)
         })
 
-    }    
+    }
     return font
 }

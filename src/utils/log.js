@@ -17,7 +17,7 @@ const getRunningFile = () => {
     return basename(process.argv[1]).replace(/\.js/, '')
 }
 
-const fileLogger = getFileLogger()
+const fileLogger = null//getFileLogger()
 
 const LogLevels = {
     Debug: "DEBUG",
