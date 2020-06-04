@@ -1,7 +1,5 @@
-import { parse, basename } from 'path'
+import { parse } from 'path'
 import { isNullOrUndefined } from "./object"
-import { join } from 'path'
-import { createWriteStream, mkdirSync, statSync } from 'fs'
 
 //Replace LogLevelFilter with something configurable
 const LogLevelFilter = "ALL"
@@ -13,9 +11,6 @@ export const toggleLogging = (enabled) => {
     loggingEnabled = enabled
 }
 
-const getRunningFile = () => {
-    return basename(process.argv[1]).replace(/\.js/, '')
-}
 
 const fileLogger = null//getFileLogger()
 
@@ -27,11 +22,11 @@ const LogLevels = {
     Error: "ERROR"
 }
 
-const generateLogMap = _ => {
+const generateLogMap = () => {
     const levels = Object.values(LogLevels)
     const map = {}
     if (LogLevelFilter === "ALL") {
-        levels.forEach((level, i) => map[level] = true)
+        levels.forEach((level) => map[level] = true)
     }
     else {
         const filterLevel = levels.indexOf(LogLevelFilter)
@@ -42,26 +37,6 @@ const generateLogMap = _ => {
 
 const LogMap = generateLogMap()
 
-function getFileLogger() {
-    try {
-        const today = new Date()
-        const fileName = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}_${getRunningFile()}.log`
-        console.log(`Writing logs to ${fileName}`)
-        checkDirectorySync('./logs')
-        return createWriteStream(join('logs', fileName), { flags: 'a' })
-    } catch (error) {
-        console.error(`getFileLogger: Failed to create logger file!. Error: ${error}`)
-        return null
-    }
-}
-
-function checkDirectorySync(directory) {
-    try {
-        statSync(directory);
-    } catch (e) {
-        mkdirSync(directory);
-    }
-}
 
 const getLogSource = () => {
     try {
@@ -93,7 +68,6 @@ const log = (message, level) => {
 
     const { funcName, lineNumber, file } = getLogSource()
     const formattedMessage = `${(new Date()).toISOString()} [${level}] ${file}::${funcName}:${lineNumber} >> ${message}`
-
     console.log(formattedMessage)
 
     try {

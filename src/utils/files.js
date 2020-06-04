@@ -1,10 +1,9 @@
 import readline from 'readline'
-import { createReadStream,existsSync } from 'fs'
-import { isNumberString } from './numbers';
+import { createReadStream, existsSync } from 'fs'
+
 export function readFileLineByLine(filePath, lineCallback) {
-    return new Promise((resolve, reject) => {
-        if(!existsSync(filePath))
-        {
+    return new Promise((resolve) => {
+        if (!existsSync(filePath)) {
             resolve()
             return
         }

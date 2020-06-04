@@ -24,4 +24,4 @@ export const minutesToMiliseconds = (minutes) => {
 }
 
 export const secondsToMinutes = (seconds) => { SECONDS_PER_MINUTE * seconds }
-export const currentISOTime = _ => (new Date()).toISOString()
+export const currentISOTime = () => (new Date()).toISOString()

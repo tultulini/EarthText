@@ -1,12 +1,6 @@
-import { getCurrentFont } from "./fonts";
-import { createWriteStream, writeFileSync } from 'fs'
-import { loadFontBoundaries } from "./services/font-boundaries";
-import { getFontDirectoryName, getCirclePointsCount, getResourcesPath, getOriginCoordinate } from "./config";
-import { loadFontShapes } from "./services/font-shapes";
-import { Font } from "./domain/font";
-import { debugLog, warnLog, errorLog } from "./utils/log";
-import { stringify } from "./utils/json";
-import { isNumberString, extractFloat } from "./utils/numbers";
+import { getCirclePointsCount, getOriginCoordinate } from "./config";
+import { errorLog } from "./utils/log";
+import { extractFloat } from "./utils/numbers";
 import {
     nauticalMilesToKm,
     statuteMilesToKm,
@@ -32,9 +26,6 @@ import { loadFonts } from "./services/fonts";
 
 export const createLayer = async (renderPlan) => {
     try {
-
-
-
         const writer = new StringBuilder()
         await writeKmlHeader(writer, renderPlan.planName || `Earth text product ${(new Date()).toISOString()}`)
         const font = await loadFonts()
@@ -44,7 +35,7 @@ export const createLayer = async (renderPlan) => {
         }
 
         await writeKmlFooter(writer)
-        const kml = writer.toString()        
+        const kml = writer.toString()
         return kml
 
     } catch (err) {
@@ -57,10 +48,6 @@ export const createLayer = async (renderPlan) => {
 
 
 async function renderAction(action, font, writer) {
-
-
-    // const fontName = getCurrentFont()
-    // writeFileSync("c:\\temp\\font.json", stringify(font))
 
     const textCenterLat = convertToDecimalDegrees(cleanValue(action.latString))
     const textCenterLon = convertToDecimalDegrees(cleanValue(action.lonString))
@@ -88,7 +75,7 @@ async function writeText(action, font, textCenter, writer) {
             return Math.max(lineSize.height, max)
         }, 0) * 1.5
         : 0
-    let linePos = 0
+
     let currentCenter = textCenter
     for (let line of textLines) {
         const lineSize = calculateTextSize(line, font, action.scaleFactor)
@@ -239,22 +226,23 @@ const cleanPolygonName = (value) => {
 }
 
 function extractCircleDirective(text) {
-    let exists = false
     const circleDirectiveSwitch = '\\c'
     let pos = text.indexOf(circleDirectiveSwitch)
     if (pos < 0 || pos + circleDirectiveSwitch.length === text.length) {
         return { exists: false }
     }
+
     pos += circleDirectiveSwitch.length
     const fl = extractFloat(text, pos)
     if (fl.index < 0) {
         throw new Error("Extracting Circle Directive Failed! Reason: Couldn't extract radius!")
     }
+
     if (fl.index + fl.value.toString().length == text.length) {
 
         throw new Error("Extracting Circle Directive Failed! Reason: missing radius units!")
-
     }
+
     const units = text.substring(fl.index + fl.value.toString().length)
     const radius = radiusToKM(fl.value, units)
 
@@ -272,22 +260,18 @@ function radiusToKM(radius, units) {
         case "sm":
         case "sml":
             return statuteMilesToKm(radius)
-            break
         case "m":
             return metersToKm(radius)
-            break
         case "yard":
             return yardsToKm(radius)
         default:
-            const message = `can't conver ${units} to km`
-            throw new Error(message)
+            throw new Error(`can't conver ${units} to km`)
     }
 }
 
 async function writeKmlHeader(writer, planName) {
     //TODO: optimization - remove unused styles from header
     const headerTemplate = await getTemplate(KMLTemplateFiles.Header)
-
     const header = headerTemplate.replace(KMLTemplatePlaceHolders.HeaderFileName, planName)
     writer.write(header)
 }

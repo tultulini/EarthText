@@ -1,6 +1,5 @@
 import { Coordinate } from "../domain/coordinate"
-import { square, sind, cosd, asind, atan2d, converToRadian, converToDegrees, cosr, sinr } from "./maths"
-import { debugLog } from "./log"
+import { sind, cosd, asind, atan2d, cosr, sinr } from "./maths"
 
 const KM_IN_NAUTICAL_MILE = 1.852
 const KM_IN_STATUTE_MILE = 1.609344
@@ -91,7 +90,7 @@ export const calculateBearing = (originCoord, targetCoord) => {
     if (bearing < 0) {
         bearing += 360
     }
-    
+
     return bearing
 }
 

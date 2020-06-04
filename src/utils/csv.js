@@ -2,7 +2,7 @@ import readline from 'readline'
 import {createReadStream} from 'fs'
 import { isNumberString } from './numbers';
 export function readCSV(csvPath) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         const readInterface = readline.createInterface({
             input: createReadStream(csvPath),
             crlfDelay: Infinity

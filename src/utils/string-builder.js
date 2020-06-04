@@ -1,4 +1,3 @@
-import { isNullOrUndefined } from "./object"
 import { isNullOrEmpty } from "./arrays"
 
 export function StringBuilder() {
