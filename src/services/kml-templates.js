@@ -1,12 +1,12 @@
 import { getS3BucketName } from '../config'
 import { getTextFile } from './accessors/s3'
 import { isSomething } from '../utils/object'
-import { debugLog } from '../utils/log'
+
 const templateCache = {}
+
 export const getTemplate = async (templateFileName) => {
     const filePath = `kml-templates/${templateFileName}`
     if (isSomething(templateCache[filePath])) {
-        debugLog(`using cache for ${filePath}`)
         return templateCache[filePath]
     }
     const template = await getTextFile(filePath, getS3BucketName())

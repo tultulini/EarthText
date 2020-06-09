@@ -5,11 +5,14 @@ export function StringBuilder() {
     this.write = (value) => {
         this.allData.push(value)
     }
-    this.toString = () => {
+    this.toString = (stripFormatting) => {
         if (isNullOrEmpty(this.allData)) {
             return null
         }
-        return this.allData.join('')
+        const entireString = this.allData.join('')
+        return stripFormatting
+            ? entireString.replace(/\r\n/g, '').replace(/\t/g, '')
+            : entireString
     }
 
 }

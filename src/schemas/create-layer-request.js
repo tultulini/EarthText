@@ -5,6 +5,9 @@ export const getCreateLayerRequestSchema = () => {
             planName: {
                 type: "string"
             },
+            font: {
+                type: "string"
+            },
             actions: {
                 type: "array",
                 items: {

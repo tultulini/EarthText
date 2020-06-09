@@ -1,5 +1,5 @@
 import { getCirclePointsCount, getOriginCoordinate } from "./config";
-import { errorLog } from "./utils/log";
+import { errorLog, debugLog } from "./utils/log";
 import { extractFloat } from "./utils/numbers";
 import {
     nauticalMilesToKm,
@@ -28,14 +28,14 @@ export const createLayer = async (renderPlan) => {
     try {
         const writer = new StringBuilder()
         await writeKmlHeader(writer, renderPlan.planName || `Earth text product ${(new Date()).toISOString()}`)
-        const font = await loadFonts()
+        const font = await loadFonts(renderPlan.font)
 
         for (let action of renderPlan.actions) {
             await renderAction(action, font, writer)
         }
 
         await writeKmlFooter(writer)
-        const kml = writer.toString()
+        const kml = writer.toString(true)
         return kml
 
     } catch (err) {

@@ -1,6 +1,5 @@
 import { isNullOrWhiteSpace } from "../../utils/strings";
 import { badRequestResponse, internalServerErrorResponse, okResponse } from "../../utils/http-response";
-import { stringify } from "../../utils/json";
 import { errorLog, debugLog } from "../../utils/log";
 import jsonSchema from 'jsonschema'
 import { getCreateLayerRequestSchema } from "../../schemas/create-layer-request";
@@ -22,14 +21,19 @@ export const handle = async (event) => {
             return badRequestResponse("need body")
         }
         console.log(`event.body: ${event.body}`);
-        var dto = JSON.parse(event.body)
+        
+        let dto
+        try {
+            dto = JSON.parse(event.body)
+        } catch (err) {
+            return badRequestResponse(`Failed to parse request body. ERR: ${err}`)
+        }
 
         const errors = validateDto(dto)
         if (arrayHasItems(errors)) {
             const message = `Schema validation failed! Errors: ${errors.join(", ")}`
             debugLog(message)
             return badRequestResponse(message)
-
         }
 
 

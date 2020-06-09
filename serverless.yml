@@ -5,7 +5,9 @@ provider:
   runtime: nodejs12.x
   stage: ${opt:stage, 'dev'}
   region: ca-central-1
-  role: arn:aws:iam::751760925794:role/eart-text-lambda-s3
+  role: arn:aws:iam::751760925794:role/earth-text-lambda-role
+  logs:
+    restApi: true
 package:
   individually: true
 
@@ -21,3 +23,4 @@ functions:
       - http:
           path: v1/layers
           method: post
+          cors: true

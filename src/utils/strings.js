@@ -16,3 +16,5 @@ export const isNullOrWhiteSpace = (value) => {
 export const getAsciiDecimal = (c, charPosition) => {
     return c.charCodeAt(isSomething(charPosition) ? charPosition : 0)
 }
+
+export const removeDoubleSpaces = val => val.replace(/ +(?= )/g, '');

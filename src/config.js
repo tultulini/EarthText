@@ -18,5 +18,7 @@ export const getResourcesPath = (fileName, direcotyPath) => {
 
 export const getS3BucketName = () => 'earth-text'
 export const FontFiles = {
-    Default: 'font.json'
+    Default: 'athabasca-bold.json',
+    AthabascaBold: "athabasca-bold.json",
+    AvenitRoman: "avenit-roman.json"
 }

@@ -2,8 +2,14 @@ import { writeFileSync } from 'fs'
 import { getResourcesPath } from "./config"
 import { debugLog } from "./utils/log"
 import { handle } from "./rest/layers/post"
+
+// "athabasca bold"
+
+// "avenit roman":
+
 const renderPlan = {
-    "planName": 'My Rendering plan',
+    "planName": 'athabasca bold',
+    "font": "athabasca bold",
     "actions": [
         { "text": "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "latString": "49.95", "lonString": "-100", "scaleFactor": 1, "rotate": 0, "color": "Black" },
         { "text": "abcdefghijklmnopqrstuvwxyz", "latString": "49.9", "lonString": "-100", "scaleFactor": 1, "rotate": 0, "color": "Blue" },
@@ -27,11 +33,10 @@ const getFileName = () => {
 }
 
 const createKml = async () => {
-    const kml = await handle({ body: JSON.stringify(renderPlan, null, '\t') })
+    const kmlData = await handle({ body: JSON.stringify(renderPlan, null, '\t') })
     const filePath = getResourcesPath(getFileName())
-    writeFileSync(filePath, kml)
+    writeFileSync(filePath, kmlData.body)
     debugLog(`kml created: ${filePath}`)
-
 }
 
 createKml()

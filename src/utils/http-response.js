@@ -1,3 +1,5 @@
+import { isNullOrUndefined } from "./object"
+
 const Codes = {
     OK: 200,
     BadRequest: 400,
@@ -9,8 +11,20 @@ const Codes = {
 export function createResponse(code, body) {
     return {
         statusCode: code,
-        body: body ? JSON.stringify(body) : null,
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+        },
+        body: stringifyBody(body)
     }
+}
+
+function stringifyBody(body) {
+    if (isNullOrUndefined(body))
+        return null
+    if (typeof body === "string") {
+        return body
+    }
+    return JSON.stringify(body)
 }
 
 export function badRequestResponse(message) {

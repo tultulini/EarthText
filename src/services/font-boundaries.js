@@ -22,7 +22,7 @@ export const loadFontBoundaries = async (dir, font) => {
         await readFileLineByLine(filePath, (line) => {
             if (isNullOrUndefined(font[currentChar])) {
                 //TODO: remove the Glyph creation from here
-                font[currentChar] = new Glyph({ boundary: new Boundary({ name }), name: currentChar })
+                font[currentChar] = new Glyph({ boundary: new Boundary({}), name: currentChar })
             }
             setBoundaryByLine(font[currentChar].boundary, line)
         })
