@@ -30,10 +30,10 @@ export const extractFloat = (val, startPos) => {
     }
     start += (startPos || 0)
     console.log(`al.substring(start):${val.substring(start)}`);
-    
+
     let end = val.substring(start).search(/[^0-9.]/)
     console.log(`end :${end}`);
-    
+
     return {
         value: end < 0
             ? parseFloat(val.substring(start))
@@ -41,4 +41,9 @@ export const extractFloat = (val, startPos) => {
         index: start
     }
 
+}
+
+export const roundTo = (num, decimalPlaces) => {
+    const multiplier = Math.pow(10, decimalPlaces)
+    return parseInt(num * multiplier) / multiplier
 }
