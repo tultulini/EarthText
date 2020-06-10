@@ -12,8 +12,8 @@ const getFileName = (fontName) => {
     switch (formattedFontName) {
         case "athabasca bold":
             return FontFiles.AthabascaBold
-        case "avenit roman":
-            return FontFiles.AvenitRoman
+        case "avenir roman":
+            return FontFiles.AvenirRoman
     }
 
     return FontFiles.Default

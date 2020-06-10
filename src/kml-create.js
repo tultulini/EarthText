@@ -5,7 +5,7 @@ import { handle } from "./rest/layers/post"
 
 // "athabasca bold"
 
-// "avenit roman":
+// "avenir roman":
 
 const renderPlan = {
     "planName": 'athabasca bold',

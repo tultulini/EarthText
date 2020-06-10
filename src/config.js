@@ -20,5 +20,5 @@ export const getS3BucketName = () => 'earth-text'
 export const FontFiles = {
     Default: 'athabasca-bold.json',
     AthabascaBold: "athabasca-bold.json",
-    AvenitRoman: "avenit-roman.json"
+    AvenirRoman: "avenir-roman.json"
 }
