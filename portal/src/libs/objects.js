@@ -1,0 +1,1 @@
+export const stringifyObject = value => JSON.stringify(value, null, '\t')

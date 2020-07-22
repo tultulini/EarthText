@@ -1,5 +1,6 @@
 import { Coordinate } from "../domain/coordinate"
 import { sind, cosd, asind, atan2d, cosr, sinr } from "./maths"
+import { debugLog } from "./log"
 
 const KM_IN_NAUTICAL_MILE = 1.852
 const KM_IN_STATUTE_MILE = 1.609344
@@ -35,18 +36,30 @@ export const yardsToKm = (yards) => yards / YARDS_IN_KM
 
 
 export const convertToDecimalDegrees = (value) => {
-    const components = value.split(' ').map(comp => parseFloat(comp))
-    const sign = components[0] >= 0 ? 1 : -1
+    let sign = 1
+    const components = value.split(' ').map(comp => {
+        let v = comp.toLowerCase()
+        if (v.indexOf('w') !== -1) {
+            sign = -1
+            v = v.replace('w', '')
+        }
+        else if (v.indexOf('s') !== -1) {
+            sign = -1
+            v = v.replace('s', '')
+        }
+        return parseFloat(v)
+    })
+
 
     switch (components.length) {
         case 1://DDD.DDD (Decimal Degrees)
-            return parseFloat(value)
+            return parseFloat(value) * sign
 
         case 2://DD MM.MMM (Degrees DEcimal Minutes)
-            return components[0] + components[1] * sign / MINUTES_IN_HOUR
+            return sign * (components[0] + components[1] / MINUTES_IN_HOUR)
 
         case 3://DD MM SS.SSS (Degrees Minutes Seconds)
-            return components[0] + components[1] * sign / MINUTES_IN_HOUR + components[2] * sign / SECONDS_IN_HOUR
+            return sign * (components[0] + components[1] / MINUTES_IN_HOUR + components[2] / SECONDS_IN_HOUR)
 
         default:
             throw new Error(`Convert to decimal degrees Failed! Reason: can't handle ${components.length} components`)

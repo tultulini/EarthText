@@ -11,4 +11,3 @@ async function createFontFile(fontFilePath) {
     writeFileSync(fontFilePath, JSON.stringify(font))
 }
 createFontFile(getResourcesPath(FontFiles.AthabascaBold))
-//Athabasca Bold

@@ -1,5 +1,5 @@
 import { getCirclePointsCount, getOriginCoordinate } from "./config";
-import { errorLog, debugLog } from "./utils/log";
+import { errorLog } from "./utils/log";
 import { extractFloat } from "./utils/numbers";
 import {
     nauticalMilesToKm,
@@ -51,6 +51,7 @@ async function renderAction(action, font, writer) {
 
     const textCenterLat = convertToDecimalDegrees(cleanValue(action.latString))
     const textCenterLon = convertToDecimalDegrees(cleanValue(action.lonString))
+    
     const textCenter = new Coordinate({ lat: textCenterLat, lon: textCenterLon })
 
     const circleDirective = extractCircleDirective(action.text)
@@ -193,14 +194,14 @@ const cleanValue = (value) => {
     let result = ''
     for (let i = 0; i < len; i++) {
         const char = value[i].toUpperCase()
-        if (/[0-9SW.]/.test(char)) {
+        if (/[0-9SW\-.]/.test(char)) {
             result += char
         }
-        else {
+        else if(char!=="\""){
             result += " "
         }
     }
-    return result.trim().replace(/  +/g, ' ').replace(/W/g, '-').replace(/S/g, '-');
+    return result.trim().replace(/  +/g, ' ')
 }
 
 const cleanPolygonName = (value) => {
