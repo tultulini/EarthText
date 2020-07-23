@@ -16,10 +16,10 @@ export const getCreateLayerRequestSchema = () => {
                         text: {
                             type: "string"
                         },
-                        latString: {
+                        lat: {
                             type: "string"
                         },
-                        lonString: {
+                        lon: {
                             type: "string"
                         },
                         scaleFactor: {
@@ -32,7 +32,7 @@ export const getCreateLayerRequestSchema = () => {
                             type: "string"
                         }
                     },
-                    required: ["text", "latString", "lonString", "scaleFactor", "rotate", "color"]
+                    required: ["text", "lat", "lon", "scaleFactor", "rotate", "color"]
                 }
             }
         },

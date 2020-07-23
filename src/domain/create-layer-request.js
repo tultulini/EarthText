@@ -1,3 +1,3 @@
-export function CreateLayerRequest({ text, latString, lonString, scaleFactor, rotate, color }) {
-    Object.assign(this, { text, latString, lonString, scaleFactor, rotate, color })
+export function CreateLayerRequest({ text, lat, lon, scaleFactor, rotate, color }) {
+    Object.assign(this, { text, lat, lon, scaleFactor, rotate, color })
 }

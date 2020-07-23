@@ -49,8 +49,8 @@ export const createLayer = async (renderPlan) => {
 
 async function renderAction(action, font, writer) {
 
-    const textCenterLat = convertToDecimalDegrees(cleanValue(action.latString))
-    const textCenterLon = convertToDecimalDegrees(cleanValue(action.lonString))
+    const textCenterLat = convertToDecimalDegrees(cleanValue(action.lat))
+    const textCenterLon = convertToDecimalDegrees(cleanValue(action.lon))
     
     const textCenter = new Coordinate({ lat: textCenterLat, lon: textCenterLon })
 
