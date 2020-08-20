@@ -1,0 +1,256 @@
+<kml>
+<Document>
+	<name>~~~KMLFileName~~~</name>
+	<StyleMap id="red_filled_outline">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#red_filled_outline_s</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#red_filled_outline_hl</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="red_filled_outline_s">
+		<LineStyle>
+			<color>ff0000ff</color>
+			<width>3</width>
+		</LineStyle>
+		<PolyStyle>
+			<color>4d0000ff</color>
+		</PolyStyle>
+	</Style>
+	<Style id="red_filled_outline_hl">
+		<LineStyle>
+			<color>ff0000ff</color>
+			<width>3</width>
+		</LineStyle>
+		<PolyStyle>
+			<color>4d0000ff</color>
+		</PolyStyle>
+	</Style>
+	<StyleMap id="green_filled_outline">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#green_filled_outline_s</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#green_filled_outline_hl</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="green_filled_outline_s">
+		<LineStyle>
+			<color>ff00a000</color>
+			<width>3</width>
+		</LineStyle>
+		<PolyStyle>
+			<color>4d00a000</color>
+		</PolyStyle>
+	</Style>
+	<Style id="green_filled_outline_hl">
+		<LineStyle>
+			<color>ff00a000</color>
+			<width>3</width>
+		</LineStyle>
+		<PolyStyle>
+			<color>4d00a000</color>
+		</PolyStyle>
+	</Style>
+	<StyleMap id="blue_filled_outline">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#blue_filled_outline_s</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#blue_filled_outline_hl</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="blue_filled_outline_s">
+		<LineStyle>
+			<color>ffff0000</color>
+			<width>3</width>
+		</LineStyle>
+		<PolyStyle>
+			<color>4dff0000</color>
+		</PolyStyle>
+	</Style>
+	<Style id="blue_filled_outline_hl">
+		<LineStyle>
+			<color>ffff0000</color>
+			<width>3</width>
+		</LineStyle>
+		<PolyStyle>
+			<color>4dff0000</color>
+		</PolyStyle>
+	</Style>
+	<StyleMap id="black_filled_outline">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#black_filled_outline_s</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#black_filled_outline_hl</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="black_filled_outline_s">
+		<LineStyle>
+			<color>ff000000</color>
+			<width>3</width>
+		</LineStyle>
+		<PolyStyle>
+			<color>4d000000</color>
+		</PolyStyle>
+	</Style>
+	<Style id="black_filled_outline_hl">
+		<LineStyle>
+			<color>ff000000</color>
+			<width>3</width>
+		</LineStyle>
+		<PolyStyle>
+			<color>4d000000</color>
+		</PolyStyle>
+	</Style>
+	<StyleMap id="white_filled_outline">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#white_filled_outline_s</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#white_filled_outline_hl</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="white_filled_outline_s">
+		<LineStyle>
+			<color>ffffffff</color>
+			<width>3</width>
+		</LineStyle>
+		<PolyStyle>
+			<color>4dffffff</color>
+		</PolyStyle>
+	</Style>
+	<Style id="white_filled_outline_hl">
+		<LineStyle>
+			<color>ffffffff</color>
+			<width>3</width>
+		</LineStyle>
+		<PolyStyle>
+			<color>4dffffff</color>
+		</PolyStyle>
+	</Style>
+	<StyleMap id="yellow_filled_outline">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#yellow_filled_outline_s</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#yellow_filled_outline_hl</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="yellow_filled_outline_s">
+		<LineStyle>
+			<color>ff00ffff</color>
+			<width>3</width>
+		</LineStyle>
+		<PolyStyle>
+			<color>4d00ffff</color>
+		</PolyStyle>
+	</Style>
+	<Style id="yellow_filled_outline_hl">
+		<LineStyle>
+			<color>ff00ffff</color>
+			<width>3</width>
+		</LineStyle>
+		<PolyStyle>
+			<color>4d00ffff</color>
+		</PolyStyle>
+	</Style>
+	<StyleMap id="magenta_filled_outline">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#magenta_filled_outline_s</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#magenta_filled_outline_hl</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="magenta_filled_outline_s">
+		<LineStyle>
+			<color>ffff00ff</color>
+			<width>3</width>
+		</LineStyle>
+		<PolyStyle>
+			<color>4dff00ff</color>
+		</PolyStyle>
+	</Style>
+	<Style id="magenta_filled_outline_hl">
+		<LineStyle>
+			<color>ffff00ff</color>
+			<width>3</width>
+		</LineStyle>
+		<PolyStyle>
+			<color>4dff00ff</color>
+		</PolyStyle>
+	</Style>
+	<StyleMap id="cyan_filled_outline">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#cyan_filled_outline_s</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#cyan_filled_outline_hl</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="cyan_filled_outline_s">
+		<LineStyle>
+			<color>ffffff00</color>
+			<width>3</width>
+		</LineStyle>
+		<PolyStyle>
+			<color>4dffff00</color>
+		</PolyStyle>
+	</Style>
+	<Style id="cyan_filled_outline_hl">
+		<LineStyle>
+			<color>ffffff00</color>
+			<width>3</width>
+		</LineStyle>
+		<PolyStyle>
+			<color>4dffff00</color>
+		</PolyStyle>
+	</Style>
+	<StyleMap id="orange_filled_outline">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#orange_filled_outline_s</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#orange_filled_outline_hl</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="orange_filled_outline_s">
+		<LineStyle>
+			<color>ff0080ff</color>
+			<width>3</width>
+		</LineStyle>
+		<PolyStyle>
+			<color>4d0080ff</color>
+		</PolyStyle>
+	</Style>
+	<Style id="orange_filled_outline_hl">
+		<LineStyle>
+			<color>ff0080ff</color>
+			<width>3</width>
+		</LineStyle>
+		<PolyStyle>
+			<color>4d0080ff</color>
+		</PolyStyle>
+	</Style>
+
